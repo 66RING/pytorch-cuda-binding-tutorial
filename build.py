@@ -52,7 +52,7 @@ ext_modules.append(
         # package name for import
         name="tiny_api_cuda",
         sources=[
-            "csrc/cuda_api.cpp",
+            "csrc/cuda_api.cu",
         ],
         extra_compile_args={
             # add c compile flags
