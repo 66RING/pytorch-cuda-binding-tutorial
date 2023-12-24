@@ -28,4 +28,8 @@ if __name__ == "__main__":
     main()
 ```
 
+## Roadmap
+
+- [x] api binding
+- [ ] torch data binding
 
