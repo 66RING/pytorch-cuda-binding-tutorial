@@ -12,7 +12,6 @@ from torch.utils.cpp_extension import (
 
 # package name managed by pip, which can be remove by `pip uninstall tiny_pkg`
 PACKAGE_NAME = "tiny_pkg"
-FORCE_SINGLE_THREAD = os.getenv("FLASH_ATTENTION_FORCE_SINGLE_THREAD", "FALSE") == "TRUE"
 
 ext_modules = []
 generator_flag = []
@@ -29,12 +28,6 @@ def get_cuda_bare_metal_version(cuda_dir):
     bare_metal_version = parse(output[release_idx].split(",")[0])
 
     return raw_output, bare_metal_version
-
-
-def append_nvcc_threads(nvcc_extra_args):
-    if not FORCE_SINGLE_THREAD:
-        return nvcc_extra_args + ["--threads", "4"]
-    return nvcc_extra_args
 
 
 if CUDA_HOME is not None:
@@ -58,8 +51,7 @@ ext_modules.append(
             # add c compile flags
             "cxx": ["-O3", "-std=c++17"] + generator_flag,
             # add nvcc compile flags
-            "nvcc": append_nvcc_threads(
-                [
+            "nvcc": [
                     "-O3",
                     "-std=c++17",
                     "-U__CUDA_NO_HALF_OPERATORS__",
@@ -69,8 +61,7 @@ ext_modules.append(
                     # "-lineinfo",
                 ]
                 + generator_flag
-                + cc_flag
-            ),
+                + cc_flag,
         },
         include_dirs=[
             Path(this_dir) / "csrc",
@@ -113,7 +104,7 @@ setup(
             "dist",
             "docs",
             "benchmarks",
-            "flash_attn.egg-info",
+            "tiny_pkg.egg-info",
         )
     ),
     description="Tiny cuda and c api binding for pytorch.",
